@@ -17,6 +17,10 @@ import HelloWorld from './components/HelloWorld.vue'
     </div>
   </header>
 
+  <div class="bg-blue-500 text-white p-4 rounded">
+    Hello Via Tailwind !
+  </div>
+
   <RouterView />
 </template>
 
