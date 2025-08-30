@@ -25,7 +25,7 @@
         <div class="flex items-center">
           <a href="#" class="flex items-center">
             <i data-feather="activity" class="w-8 h-8 text-blue-600"></i>
-            <span class="ml-2 text-xl font-bold text-blue-600">TickTrack</span>
+            <span class="ml-2 text-xl font-bold text-blue-600">QuTick</span>
           </a>
         </div>
 

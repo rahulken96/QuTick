@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "cls && vite --host",
-    "build": "vite build",
+    "build": "cls && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix"
   },

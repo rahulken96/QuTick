@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import Admin from "@/layouts/Admin.vue";
 import Auth from "@/layouts/Auth.vue";
-import useAuthStore from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth";
 import Dashboard from "@/views/admin/Dashboard.vue";
 import TicketList from "@/views/admin/ticket/TicketList.vue";
 import TicketDetail from "@/views/admin/ticket/TicketDetail.vue";
@@ -79,16 +80,22 @@ const router = createRouter({
       ],
     },
     {
-      path: "/auth",
+      path: "/login",
       component: Auth,
       children: [
         {
-          path: "login",
+          path: "",
           name: "login",
           component: Login,
         },
+      ],
+    },
+    {
+      path: "/register",
+      component: Auth,
+      children: [
         {
-          path: "register",
+          path: "",
           name: "register",
           component: Register,
         },
