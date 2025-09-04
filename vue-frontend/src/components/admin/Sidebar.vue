@@ -1,8 +1,8 @@
 <template>
   <aside class="w-64 bg-white shadow-lg">
     <div class="p-6 border-b border-gray-100">
-      <h1 class="text-2xl font-bold text-blue-600 flex items-center">
-        <i data-feather="activity" class="w-8 h-8 mr-2"></i>
+      <h1 class="text-2xl font-bold text-green-600 flex items-center">
+        <i data-feather="radio" class="w-8 h-8 mr-2"></i>
         QuTick
       </h1>
     </div>

@@ -27,7 +27,7 @@ const router = createRouter({
           component: AppDashboard,
           meta: {
             requiresAuth: true,
-            title: "Dashboard",
+            title: "My Dashboard",
           },
         },
         {
@@ -56,7 +56,7 @@ const router = createRouter({
           component: Dashboard,
           meta: {
             requiresAuth: true,
-            title: "Admin Dashboard",
+            title: "Dashboard",
           },
         },
         {

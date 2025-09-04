@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!-- eslint-disable no-unused-vars -->
 <script setup>
+import { sweetAlert } from "@/helpers/swalHelper";
 import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
@@ -19,7 +20,7 @@ const handleSubmit = async () => {
 
   if (error.value == "Unauthorized") {
     form.value.password = null;
-    alert("Login Gagal! Silakan periksa kembali email dan password Anda.");
+    sweetAlert('Ooooppss!', 'Email/Password mu salah coyy!');
     return;
   }
 };

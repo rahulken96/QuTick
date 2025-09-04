@@ -23,6 +23,8 @@ export const useAuthStore = defineStore("auth", {
 
     async login(credentials) {
       this.loading = true;
+      this.error   = null;
+      this.success = null;
 
       try {
         const response = await axiosInstance.post("/login", credentials);
@@ -49,6 +51,30 @@ export const useAuthStore = defineStore("auth", {
         this.error = handleError(error);
       } finally {
         this.loading = false;
+      }
+    },
+
+    async checkAuth() {
+      try {
+        const token = Cookies.get("token");
+        if (!token) {
+          this.user = null;
+          return false;
+        }
+
+        const response = await axiosInstance.get("/my-profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!(response.data?.status || false)) return false;
+
+        this.user = response.data?.data;
+        return true;
+      } catch (error) {
+        this.user = null;
+        Cookies.remove("token");
+        this.error = handleError(error);
+        return false;
       }
     },
 
