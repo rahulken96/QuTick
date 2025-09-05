@@ -19,7 +19,7 @@ export const useTicketStore = defineStore("ticket", {
       this.success = null;
 
       try {
-        const response = await axiosInstance.get("/ticket/all", params);
+        const response = await axiosInstance.get("/ticket/all", {params});
         const isValid  = response.data?.status || false;
 
         if (!isValid) {

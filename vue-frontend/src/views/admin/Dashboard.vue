@@ -43,9 +43,9 @@ onMounted(async () => {
   await fetchTickets();
   await fetchStatistics();
 
-  if (authStore.justLoggedIn) {
-    sweetAlert("Berhasil!", "Selamat datang di Admin Dashboard!.", "success");
-  }
+  // if (authStore.justLoggedIn) {
+  //   sweetAlert("Berhasil!", "Selamat datang di Admin Dashboard!.", "success");
+  // }
 
   const statusCtx = document.getElementById('statusChart')?.getContext('2d')
   if (statusCtx && statistic.value) {

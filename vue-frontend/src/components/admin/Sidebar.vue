@@ -9,8 +9,16 @@ const authStore = useAuthStore();
 const {logout} = authStore;
 
 const handleLogout = async () => {
-  await logout();
-  sweetAlert("Berhasil!", "Kamu sudah logout.", "success");
+  sweetAlert(
+    "Ingin Logout ?",
+    "Yakin ingin keluar ?",
+    "warning",
+    async () => {
+      await logout();
+      sweetAlert('Berhasil', 'Anda berhasil logout!', 'success');
+    },
+    'Ya, Yakin'
+  );
 }
 </script>
 

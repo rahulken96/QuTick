@@ -59,13 +59,13 @@ class TicketController extends Controller
                 ->orderBy('created_at', 'asc')
                 ->get();
 
-            if ($tickets->isEmpty()) {
-                return response()->json([
-                    'status'    => false,
-                    'totalRows' => 0,
-                    'data'      => []
-                ], 200);
-            }
+            // if ($tickets->isEmpty()) {
+            //     return response()->json([
+            //         'status'    => false,
+            //         'totalRows' => 0,
+            //         'data'      => []
+            //     ], 200);
+            // }
 
             return response()->json([
                 'status'    => true,
