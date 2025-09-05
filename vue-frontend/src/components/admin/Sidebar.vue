@@ -1,3 +1,19 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<!-- eslint-disable no-unused-vars -->
+<script setup>
+import { sweetAlert } from "@/helpers/swalHelper";
+import { useAuthStore } from '@/stores/auth';
+import { storeToRefs } from 'pinia';
+
+const authStore = useAuthStore();
+const {logout} = authStore;
+
+const handleLogout = async () => {
+  await logout();
+  sweetAlert("Berhasil!", "Kamu sudah logout.", "success");
+}
+</script>
+
 <template>
   <aside class="w-64 bg-white shadow-lg">
     <div class="p-6 border-b border-gray-100">
@@ -21,8 +37,8 @@
         Tiket
       </RouterLink>
 
-      <a href="#"
-        class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:border-l-4 hover:border-gray-200 mt-6">
+      <a @click="handleLogout()"
+        class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:border-l-4 hover:border-gray-200 mt-6" style="cursor: pointer;">
         <i data-feather="log-out" class="w-5 h-5 mr-3"></i>
         Logout
       </a>

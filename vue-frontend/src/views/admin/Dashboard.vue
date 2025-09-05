@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!-- eslint-disable no-unused-vars -->
 <script setup>
+import { sweetAlert } from "@/helpers/swalHelper";
 import { ref, onMounted, watch } from "vue";
 import { Chart } from "chart.js/auto";
 import { useDashboardStore } from "@/stores/dashboard";
@@ -12,8 +13,6 @@ import { DateTime } from "luxon";
 import feather from "feather-icons";
 
 const authStore = useAuthStore();
-const { user } = storeToRefs(authStore);
-const message = ref("");
 
 const dashboardStore = useDashboardStore();
 const { statistic } = storeToRefs(dashboardStore);
@@ -44,9 +43,11 @@ onMounted(async () => {
   await fetchTickets();
   await fetchStatistics();
 
-  message.value = "Selamat datang di Admin Dashboard!";
-  const statusCtx = document.getElementById('statusChart')?.getContext('2d')
+  if (authStore.justLoggedIn) {
+    sweetAlert("Berhasil!", "Selamat datang di Admin Dashboard!.", "success");
+  }
 
+  const statusCtx = document.getElementById('statusChart')?.getContext('2d')
   if (statusCtx && statistic.value) {
     chart = new Chart(statusCtx, {
       type: 'doughnut',
@@ -191,7 +192,7 @@ onMounted(async () => {
                     {{ ticket.status.name }}
                   </span>
                 </div>
-                
+
                 <div class="text-right">
                   <p class="text-sm text-gray-500 mb-4">{{ ticket.time }}</p>
                   <button @click="toggleTicketMenu(ticket)" class="text-gray-400 hover:text-gray-600 transition-colors">
@@ -214,7 +215,7 @@ onMounted(async () => {
 
       <!-- Status Distribution Section -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4">Distribusi Status</h2>
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Keterangan</h2>
 
         <div class="mb-6 h-64 flex items-center justify-center">
           <canvas id="statusChart"></canvas>

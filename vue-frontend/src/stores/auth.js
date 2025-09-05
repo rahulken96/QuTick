@@ -11,6 +11,7 @@ export const useAuthStore = defineStore("auth", {
     loading: false,
     error: null,
     success: null,
+    justLoggedIn: false,
   }),
 
   getters: {
@@ -40,6 +41,7 @@ export const useAuthStore = defineStore("auth", {
 
         /* simpan user ke store guard */
         this.user = response.data?.data?.user;
+        this.justLoggedIn = true;
 
         const isAdmin = response.data?.data?.user?.role == "admin";
         if (isAdmin) {
@@ -78,6 +80,30 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    async logout() {},
+    async logout() {
+      this.loading = true;
+      this.error   = null;
+      this.success = null;
+
+      try {
+        const response = await axiosInstance.post("/logout");
+        const isValid = response.data?.status || false;
+
+        if (!isValid) {
+          this.error = handleError(response.data?.message);
+        }
+
+        Cookies.remove('token');
+
+        this.user    = null;
+        this.success = response.data?.message;
+
+        router.push({name: 'login'});
+      } catch (error) {
+        this.error = handleError(error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });
