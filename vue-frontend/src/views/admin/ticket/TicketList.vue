@@ -36,7 +36,7 @@ onMounted(async () => {
   <div class="p-6">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
       <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <div class="relative">
             <input type="text" v-model="filters.keyword" placeholder="Cari tiket..."
@@ -153,13 +153,11 @@ onMounted(async () => {
 
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <RouterLink :to="{ name: 'admin.ticket.detail', params: { code: ticket.code } }"
-                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50">
+                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:text-blue-800 hover:bg-blue-50">
                   <i data-feather="message-square" class="w-4 h-4 mr-2"></i>
                   Jawab
                 </RouterLink>
               </td>
-
-
 
             </tr>
           </tbody>

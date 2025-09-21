@@ -33,6 +33,7 @@ export const useAuthStore = defineStore("auth", {
 
         if (!isValid) {
           this.error = handleError(response.data?.message);
+          return;
         }
 
         const token = response.data?.data?.token;
@@ -43,7 +44,7 @@ export const useAuthStore = defineStore("auth", {
         this.user = response.data?.data?.user;
         this.justLoggedIn = true;
 
-        const isAdmin = response.data?.data?.user?.role == "admin";
+        const isAdmin = this.user?.role === "admin";
         if (isAdmin) {
           router.push({ name: "admin.dashboard" });
         } else {
@@ -68,7 +69,9 @@ export const useAuthStore = defineStore("auth", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!(response.data?.status || false)) return false;
+        if (!response.data?.status) {
+          return false;
+        }
 
         this.user = response.data?.data;
         return true;

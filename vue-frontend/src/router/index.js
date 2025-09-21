@@ -56,6 +56,7 @@ const router = createRouter({
           component: Dashboard,
           meta: {
             requiresAuth: true,
+            role: "admin",
             title: "Dashboard",
           },
         },
@@ -65,6 +66,7 @@ const router = createRouter({
           component: TicketList,
           meta: {
             requiresAuth: true,
+            role: "admin",
             title: "Ticket",
           },
         },
@@ -74,6 +76,7 @@ const router = createRouter({
           component: TicketDetail,
           meta: {
             requiresAuth: true,
+            role: "admin",
             title: "Ticket Detail",
           },
         },
@@ -87,6 +90,7 @@ const router = createRouter({
           path: "",
           name: "login",
           component: Login,
+          meta: { requiresUnauth: true },
         },
       ],
     },
@@ -98,6 +102,7 @@ const router = createRouter({
           path: "",
           name: "register",
           component: Register,
+          meta: { requiresUnauth: true },
         },
       ],
     },
@@ -122,7 +127,11 @@ router.beforeEach(async (to, from, next) => {
       next({ name: "login" });
     }
   } else if (to.meta.requiresUnauth && authStore.token) {
-    next({ name: "dashboard" });
+    if (authStore.user?.role === "admin") {
+      next({ name: "admin.dashboard" });
+    } else {
+      next({ name: "app.dashboard" });
+    }
   } else {
     next();
   }

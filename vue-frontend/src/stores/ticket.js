@@ -35,11 +35,48 @@ export const useTicketStore = defineStore("ticket", {
     },
 
     async fetchMyTickets(params) {
+      this.loading = true;
+      this.error   = null;
+      this.success = null;
 
+      try {
+        const response = await axiosInstance.get("/ticket/my-ticket", {params});
+        const isValid  = response.data?.status || false;
+
+        if (!isValid) {
+          this.error = handleError(response.data?.message);
+        }
+
+        this.tickets = response.data?.data;
+      } catch (error) {
+        this.error = handleError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
     async fetchTicket(code) {
+      this.loading = true;
+      this.error   = null;
+      this.success = null;
 
+      try {
+        const response = await axiosInstance.get("/ticket/detail", {
+          params: { ticket_code: code }
+        });
+
+        const isValid  = response.data?.status || false;
+
+        if (!isValid) {
+          this.error = handleError(response.data?.message);
+        }
+
+        return response.data?.data;
+      } catch (error) {
+        this.error = handleError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
     async createTicket(payload) {
@@ -51,7 +88,26 @@ export const useTicketStore = defineStore("ticket", {
     },
 
     async createTicketReply(code, payload) {
+      this.loading = true;
+      this.error   = null;
+      this.success = null;
 
+      try {
+        payload.ticket_code = code;
+        const response = await axiosInstance.post("/ticket/reply", payload);
+
+        const isValid  = response.data?.status || false;
+
+        if (!isValid) {
+          this.error = handleError(response.data?.message);
+        }
+
+        return response.data?.data;
+      } catch (error) {
+        this.error = handleError(error);
+      } finally {
+        this.loading = false;
+      }
     },
   }
 });

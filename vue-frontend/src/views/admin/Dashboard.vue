@@ -188,7 +188,12 @@ onMounted(async () => {
                   <div class="flex items-center mb-3">
                     <span class="text-sm text-gray-500">#{{ ticket.code }}</span>
                   </div>
-                  <span class="status-badge bg-blue-100 text-blue-800 rounded-full font-medium">
+                  <span class="status-badge rounded-full font-medium" :class="{
+                    'text-blue-700 bg-blue-100': ticket.status.number == 0,
+                    'text-yellow-700 bg-yellow-100': ticket.status.number == 1,
+                    'text-green-700 bg-green-100': ticket.status.number == 2,
+                    'text-red-700 bg-red-100': ticket.status.number == 3,
+                  }">
                     {{ ticket.status.name }}
                   </span>
                 </div>
