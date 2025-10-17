@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import Admin from "@/layouts/Admin.vue";
 import Auth from "@/layouts/Auth.vue";
 import { useAuthStore } from "@/stores/auth";
