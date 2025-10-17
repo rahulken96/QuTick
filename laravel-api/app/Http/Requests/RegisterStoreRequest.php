@@ -19,4 +19,14 @@ class RegisterStoreRequest extends FormRequest
             'password'  => 'required|string|min:8',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'password.required' => 'Password wajib diisi',
+        ];
+    }
+
 }
