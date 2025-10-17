@@ -171,6 +171,10 @@ const resetForm = () => {
               class="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               :class="{'border-red-500 ring-red-500': error?.message}" rows="4" placeholder="Tulis jawaban Anda di sini...">
             </textarea>
+
+            <p class="mt-1 text-xs text-red-500" v-if="error?.message">
+              {{ error?.message?.join(', ') }}
+            </p>
           </div>
 
           <div class="flex items-center justify-between">

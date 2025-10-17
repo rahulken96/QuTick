@@ -13,12 +13,13 @@ import App from "@/layouts/App.vue";
 import AppDashboard from "@/views/app/Dashboard.vue";
 import AppTicketDetail from "@/views/app/TicketDetail.vue";
 import AppTicketCreate from "@/views/app/TicketCreate.vue";
+import Cookies from "js-cookie";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/dashboard",
       component: App,
       children: [
         {
@@ -112,29 +113,55 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
-  if (to.meta.requiresAuth) {
-    if (authStore.token) {
-      try {
-        if (!authStore.user) {
-          await authStore.checkAuth();
-        }
+  // Debug log untuk tracking
+  // console.log('=== GUARD DEBUG ===');
+  // console.log('To route:', to.path);
+  // console.log('Token from store:', authStore.token);
+  // console.log('User from store:', authStore.user);
+  // console.log('Just logged in:', authStore.justLoggedIn);
+  // console.log('==================');
 
-        next();
-      } catch (error) {
-        next({ name: "login" });
+  // Halaman yang butuh login
+  if (to.meta.requiresAuth) {
+    const token = authStore.token || Cookies.get("token"); // Fallback ke cookies kalau store token null
+
+    if (!token) {
+      return next({ name: "login" }); // Redirect ke login kalau token gak ada
+    }
+
+    // Kalau user belum ada, validasi token
+    if (!authStore.user) {
+      const success = await authStore.checkAuth();
+      if (!success) {
+        return next({ name: "login" }); // Token invalid, ke login
       }
-    } else {
-      next({ name: "login" });
     }
-  } else if (to.meta.requiresUnauth && authStore.token) {
-    if (authStore.user?.role === "admin") {
-      next({ name: "admin.dashboard" });
-    } else {
-      next({ name: "app.dashboard" });
+
+    // Cek role untuk route yang punya meta role
+    if (to.meta.role && authStore.user?.role !== to.meta.role) {
+      // Redirect sesuai role user
+      return next({
+        name: authStore.user?.role === "admin" ? "admin.dashboard" : "app.dashboard",
+      });
     }
-  } else {
-    next();
+
+    // Semua aman, lanjut ke route tujuan
+    return next();
   }
+
+  // Halaman khusus tamu (login/register)
+  if (to.meta.requiresUnauth && authStore.token) {
+    // Pastikan user sudah siap
+    if (!authStore.user) await authStore.checkAuth();
+
+    // Redirect sesuai role
+    return next({
+      name: authStore.user?.role === "admin" ? "admin.dashboard" : "app.dashboard",
+    });
+  }
+
+  // Default: lanjut ke route
+  next();
 });
 
 export default router;

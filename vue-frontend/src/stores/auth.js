@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
+    token: null,
     loading: false,
     error: null,
     success: null,
@@ -20,11 +21,42 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    async register(credentials) {},
+    async register(credentials) {
+      this.loading = true;
+      this.justLoggedIn = false;
+      this.error = null;
+      this.success = null;
+      this.user = null;
+
+      try {
+        const response = await axiosInstance.post("/register", credentials);
+        const isValid = response.data?.status || false;
+
+        if (!isValid) {
+          this.error = handleError(response.data?.message);
+          return;
+        }
+
+        const token = response.data?.data?.token;
+        Cookies.set("token", token);
+        this.token = token;
+        this.success = response.data.message;
+
+        /* simpan user ke store guard */
+        this.user = response.data?.data?.user;
+        this.justLoggedIn = true;
+
+        router.push({ name: "app.dashboard" });
+      } catch (error) {
+        this.error = handleError(error);
+      } finally {
+        this.loading = false;
+      }
+    },
 
     async login(credentials) {
       this.loading = true;
-      this.error   = null;
+      this.error = null;
       this.success = null;
 
       try {
@@ -38,6 +70,7 @@ export const useAuthStore = defineStore("auth", {
 
         const token = response.data?.data?.token;
         Cookies.set("token", token);
+        this.token = token;
         this.success = response.data.message;
 
         /* simpan user ke store guard */
@@ -59,7 +92,7 @@ export const useAuthStore = defineStore("auth", {
 
     async checkAuth() {
       try {
-        const token = Cookies.get("token");
+        const token = this.token || Cookies.get("token");
         if (!token) {
           this.user = null;
           return false;
@@ -70,10 +103,13 @@ export const useAuthStore = defineStore("auth", {
         });
 
         if (!response.data?.status) {
+          this.user = null;
+          Cookies.remove("token");
           return false;
         }
 
         this.user = response.data?.data;
+        this.token = token;
         return true;
       } catch (error) {
         this.user = null;
@@ -85,7 +121,7 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       this.loading = true;
-      this.error   = null;
+      this.error = null;
       this.success = null;
 
       try {
@@ -96,12 +132,12 @@ export const useAuthStore = defineStore("auth", {
           this.error = handleError(response.data?.message);
         }
 
-        Cookies.remove('token');
+        Cookies.remove("token");
 
-        this.user    = null;
+        this.user = null;
         this.success = response.data?.message;
 
-        router.push({name: 'login'});
+        router.push({ name: "login" });
       } catch (error) {
         this.error = handleError(error);
       } finally {
