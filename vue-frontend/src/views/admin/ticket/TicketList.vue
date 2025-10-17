@@ -11,7 +11,7 @@ import { Chart } from "chart.js/auto";
 import feather from "feather-icons";
 
 const ticketStore = useTicketStore();
-const { tickets } = storeToRefs(ticketStore);
+const { tickets, loading } = storeToRefs(ticketStore);
 const { fetchTickets } = ticketStore;
 
 const filters = ref({
@@ -34,19 +34,26 @@ onMounted(async () => {
 
 <template>
   <div class="p-6">
+    <!-- Filter -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
       <div class="p-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <div class="relative">
-            <input type="text" v-model="filters.keyword" placeholder="Cari tiket..."
-              class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+            <input
+              type="text"
+              v-model="filters.keyword"
+              placeholder="Cari tiket..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+            />
             <i data-feather="search" class="w-4 h-4 text-gray-400 absolute left-3 top-2.5"></i>
           </div>
 
           <!-- Status Filter -->
-          <select v-model="filters.status"
-            class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+          <select
+            v-model="filters.status"
+            class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500"
+          >
             <option value="">Semua Status</option>
             <option value="0">Open</option>
             <option value="1">In Progress</option>
@@ -55,8 +62,10 @@ onMounted(async () => {
           </select>
 
           <!-- Priority Filter -->
-          <select v-model="filters.priority"
-            class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+          <select
+            v-model="filters.priority"
+            class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500"
+          >
             <option value="">Semua Prioritas</option>
             <option value="2">High</option>
             <option value="1">Medium</option>
@@ -70,99 +79,122 @@ onMounted(async () => {
             <option value="week">Minggu Ini</option>
             <option value="month">Bulan Ini</option>
           </select> -->
-
         </div>
       </div>
     </div>
 
-    <!-- Tickets Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID Tiket
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Judul
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pelapor
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Prioritas
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tanggal
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Aksi
-              </th>
-            </tr>
-          </thead>
+    <!-- Table Container -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Tiket</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pelapor</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prioritas</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+          </tr>
+        </thead>
 
-          <tbody class="bg-white divide-y divide-gray-100">
-            <tr v-for="ticket in tickets" :key="ticket.code" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                #{{ ticket.code }}
-              </td>
+        <tbody class="bg-white divide-y divide-gray-100">
+          <!-- Skeleton Loading Rows -->
+          <tr v-if="loading" v-for="n in 5" :key="'skeleton-' + n" class="animate-pulse">
+            <td class="px-6 py-4">
+              <div class="h-4 bg-gray-200 rounded w-16"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-4 bg-gray-200 rounded w-40"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center space-x-3">
+                <div class="w-6 h-6 bg-gray-200 rounded-full"></div>
+                <div class="h-4 bg-gray-200 rounded w-24"></div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-20"></div></td>
+            <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-20"></div></td>
+            <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-24"></div></td>
+            <td class="px-6 py-4"><div class="h-8 bg-gray-200 rounded w-16"></div></td>
+          </tr>
 
-              <td class="px-6 py-4">
-                <div class="text-sm text-gray-800">
-                  {{ ticket.title }}
-                </div>
-              </td>
+          <!-- Data Rows -->
+          <tr
+            v-else
+            v-for="ticket in tickets"
+            :key="ticket.code"
+            class="hover:bg-gray-50"
+          >
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+              #{{ ticket.code }}
+            </td>
 
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <img :src="`https://ui-avatars.com/api/?name=${ticket.user.name}&background=0D8ABC&color=fff`"
-                    :alt="ticket.user.name" class="w-6 h-6 rounded-full" />
-                  <span class="ml-2 text-sm text-gray-800">{{ ticket.user.name }}</span>
-                </div>
-              </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-800">{{ ticket.title }}</div>
+            </td>
 
-              <!-- kolom status, prioritas, tanggal, aksi bisa kamu lengkapi -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-3 py-1 text-xs font-medium rounded-full" :class="{
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <img
+                  :src="`https://ui-avatars.com/api/?name=${ticket.user.name}&background=0D8ABC&color=fff`"
+                  :alt="ticket.user.name"
+                  class="w-6 h-6 rounded-full"
+                />
+                <span class="ml-2 text-sm text-gray-800">{{ ticket.user.name }}</span>
+              </div>
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-3 py-1 text-xs font-medium rounded-full"
+                :class="{
                   'text-blue-700 bg-blue-100': ticket.status.number == 0,
                   'text-yellow-700 bg-yellow-100': ticket.status.number == 1,
                   'text-green-700 bg-green-100': ticket.status.number == 2,
                   'text-red-700 bg-red-100': ticket.status.number == 3,
-                }">
-                  {{ capitalize(ticket.status.name) }}
-                </span>
-              </td>
+                }"
+              >
+                {{ capitalize(ticket.status.name) }}
+              </span>
+            </td>
 
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-3 py-1 text-xs font-medium rounded-full" :class="{
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-3 py-1 text-xs font-medium rounded-full"
+                :class="{
                   'text-red-700 bg-red-100': ticket.priority.number == 2,
                   'text-yellow-700 bg-yellow-100': ticket.priority.number == 1,
                   'text-green-700 bg-green-100': ticket.priority.number == 0,
-                }">
-                  {{ capitalize(ticket.priority.name) }}
-                </span>
-              </td>
+                }"
+              >
+                {{ capitalize(ticket.priority.name) }}
+              </span>
+            </td>
 
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                {{ ticket.created_at }}
-              </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+              {{ ticket.created_at }}
+            </td>
 
-              <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <RouterLink :to="{ name: 'admin.ticket.detail', params: { code: ticket.code } }"
-                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:text-blue-800 hover:bg-blue-50">
-                  <i data-feather="message-square" class="w-4 h-4 mr-2"></i>
-                  Jawab
-                </RouterLink>
-              </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <RouterLink
+                :to="{ name: 'admin.ticket.detail', params: { code: ticket.code } }"
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:text-blue-800 hover:bg-blue-50"
+              >
+                <i data-feather="message-square" class="w-4 h-4 mr-2"></i>
+                Jawab
+              </RouterLink>
+            </td>
+          </tr>
 
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <!-- Empty State -->
+          <tr v-if="!loading && !tickets.length">
+            <td colspan="7" class="px-6 py-8 text-center text-gray-500 text-sm">
+              Tidak ada tiket ditemukan.
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>

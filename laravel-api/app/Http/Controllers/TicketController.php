@@ -51,21 +51,29 @@ class TicketController extends Controller
                 ->offset($offset)
                 ->orderByRaw("
                     CASE
+                        WHEN status = 0 THEN 0
+                        WHEN status = 1 THEN 1
+                        WHEN status = 2 THEN 2
+                        ELSE 3
+                    END
+                ")
+                ->orderByRaw("
+                    CASE
                         WHEN priority = 2 THEN 0
                         WHEN priority = 1 THEN 1
                         ELSE 2
                     END
                 ")
-                ->orderBy('created_at', 'asc')
+                ->orderBy('created_at', 'ASC')
                 ->get();
 
-            // if ($tickets->isEmpty()) {
-            //     return response()->json([
-            //         'status'    => false,
-            //         'totalRows' => 0,
-            //         'data'      => []
-            //     ], 200);
-            // }
+            if ($tickets->isEmpty()) {
+                return response()->json([
+                    'status'    => true,
+                    'totalRows' => 0,
+                    'data'      => []
+                ], 200);
+            }
 
             return response()->json([
                 'status'    => true,
@@ -109,7 +117,7 @@ class TicketController extends Controller
 
             if ($tickets->isEmpty()) {
                 return response()->json([
-                    'status'    => false,
+                    'status'    => true,
                     'totalRows' => 0,
                     'data'      => []
                 ], 200);

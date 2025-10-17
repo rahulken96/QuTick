@@ -26,7 +26,7 @@ export const useTicketStore = defineStore("ticket", {
           this.error = handleError(response.data?.message);
         }
 
-        this.tickets = response.data?.data;
+        this.tickets = response.data?.data || [];
       } catch (error) {
         this.error = handleError(error);
       } finally {
@@ -47,7 +47,7 @@ export const useTicketStore = defineStore("ticket", {
           this.error = handleError(response.data?.message);
         }
 
-        this.tickets = response.data?.data;
+        this.tickets = response.data?.data || [];
       } catch (error) {
         this.error = handleError(error);
       } finally {
@@ -80,7 +80,25 @@ export const useTicketStore = defineStore("ticket", {
     },
 
     async createTicket(payload) {
+      this.loading = true;
+      this.error   = null;
+      this.success = null;
 
+      try {
+        const response = await axiosInstance.post("/ticket/store", payload);
+        const isValid  = response.data?.status || false;
+
+        if (!isValid) {
+          this.error = handleError(response.data?.message);
+        }
+
+        this.success = response.data?.message;
+        router.push({ name: "app.dashboard" });
+      } catch (error) {
+        this.error = handleError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
     async updateTicket(payload) {

@@ -121,6 +121,18 @@ const resetForm = () => {
       </div>
     </div>
 
+    <!-- Deskripsi Ticket -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+      <div class="p-6">
+        <h3 class="text-lg font-semibold text-gray-800">
+          Deskripsi Ticket
+        </h3>
+        <span class="text-xs font-sans font-semibold text-gray-400">
+          "{{ ticket.description ?? 'n/a' }}"
+        </span>
+      </div>
+    </div>
+
     <!-- Replies -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100">
       <div class="p-6 border-b border-gray-100" v-if="replies.length > 0">

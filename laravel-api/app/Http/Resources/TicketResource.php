@@ -40,6 +40,7 @@ class TicketResource extends JsonResource
             'created_at'    => formatCreatedForHumans($this->created_at),
             'updated_at'    => formatCreatedForHumans($this->updated_at),
             'completed_at'  => formatCreatedForHumans($this->completed_at),
+            'count_reply'   => count($this->replies),
         ];
     }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { defineStore } from "pinia";
 import { axiosInstance } from "@/plugins/axios";
 import { handleError } from "@/helpers/errorHelper";
