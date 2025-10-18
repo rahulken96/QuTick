@@ -42,15 +42,14 @@ const handleSubmit = async () => {
   resetForm();
 }
 
-onMounted(async () => {
-  await fetchTicketDetail();
-  feather.replace();
-})
-
 const resetForm = () => {
   form.value.message = "";
 };
 
+onMounted(async () => {
+  await fetchTicketDetail();
+  feather.replace();
+})
 
 </script>
 
@@ -70,7 +69,7 @@ const resetForm = () => {
 
             <div class="mt-4 flex items-center space-x-4">
               <!-- Status -->
-              <span class="px-3 py-1 text-sm rounded-lg" :class="{
+              <span class="px-3 font-semibold py-1 text-sm rounded-lg" :class="{
                 'text-blue-700 bg-blue-100': ticket.status?.number == 0,
                 'text-yellow-700 bg-yellow-100': ticket.status?.number == 1,
                 'text-green-700 bg-green-100': ticket.status?.number == 2,
@@ -80,7 +79,7 @@ const resetForm = () => {
               </span>
 
               <!-- Priority -->
-              <span class="px-3 py-1 text-sm rounded-lg" :class="{
+              <span class="px-3 font-semibold py-1 text-sm rounded-lg" :class="{
                 'text-red-700 bg-red-100': ticket.priority?.number == 2,
                 'text-yellow-700 bg-yellow-100': ticket.priority?.number == 1,
                 'text-green-700 bg-green-100': ticket.priority?.number == 0,
