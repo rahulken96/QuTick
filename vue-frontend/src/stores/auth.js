@@ -124,23 +124,15 @@ export const useAuthStore = defineStore("auth", {
       this.success = null;
 
       try {
-        const response = await axiosInstance.post("/logout");
-        const isValid = response.data?.status || false;
-
-        if (!isValid) {
-          this.error = handleError(response.data?.message);
-        }
-
-        Cookies.remove("token");
-
-        this.user = null;
-        this.success = response.data?.message;
-
-        router.push({ name: "login" });
+        await axiosInstance.post("/logout");
       } catch (error) {
-        this.error = handleError(error);
+        console.error("Logout API error, forcing frontend logout:", error);
       } finally {
+        Cookies.remove("token");
+        this.token = null;
+        this.user = null;
         this.loading = false;
+        router.push({ name: "login" });
       }
     },
   },
