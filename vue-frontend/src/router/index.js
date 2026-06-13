@@ -13,6 +13,8 @@ import AppDashboard from "@/views/app/Dashboard.vue";
 import AppTicketDetail from "@/views/app/TicketDetail.vue";
 import AppTicketCreate from "@/views/app/TicketCreate.vue";
 import Cookies from "js-cookie";
+import ActivityLogs from "@/views/admin/logs/ActivityLogs.vue";
+import MyActivity from "@/views/app/logs/MyActivity.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +45,15 @@ const router = createRouter({
           path: "ticket/create",
           name: "app.ticket.create",
           component: AppTicketCreate,
+        },
+        {
+          path: "activity",
+          name: "app.activity",
+          component: MyActivity,
+          meta: {
+            requiresAuth: true,
+            title: "Aktivitas Saya",
+          },
         },
       ],
     },
@@ -78,6 +89,16 @@ const router = createRouter({
             requiresAuth: true,
             role: "admin",
             title: "Ticket Detail",
+          },
+        },
+        {
+          path: "logs",
+          name: "admin.logs",
+          component: ActivityLogs,
+          meta: {
+            requiresAuth: true,
+            role: "admin",
+            title: "Aktivitas Sistem",
           },
         },
       ],

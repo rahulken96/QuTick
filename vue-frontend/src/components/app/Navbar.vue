@@ -23,10 +23,19 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
-          <a href="#" class="flex items-center">
-            <i data-feather="radio" class="w-8 h-8 text-green-600"></i>
-            <span class="ml-2 text-xl font-bold text-green-600">QuTick</span>
-          </a>
+          <RouterLink :to="{ name: 'app.dashboard' }" class="flex items-center">
+            <i data-feather="radio" class="w-8 h-8 text-emerald-600"></i>
+            <span class="ml-2 text-xl font-bold text-emerald-600">QuTick</span>
+          </RouterLink>
+          
+          <div class="flex items-center space-x-6 ml-8">
+            <RouterLink :to="{ name: 'app.dashboard' }" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors" :class="{ 'text-emerald-600 font-semibold border-b-2 border-emerald-500 py-5': $route.name === 'app.dashboard' }">
+              Dashboard
+            </RouterLink>
+            <RouterLink :to="{ name: 'app.activity' }" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors" :class="{ 'text-emerald-600 font-semibold border-b-2 border-emerald-500 py-5': $route.name === 'app.activity' }">
+              Aktivitas Saya
+            </RouterLink>
+          </div>
         </div>
 
         <div class="flex items-center space-x-4">
