@@ -187,6 +187,8 @@ class TicketController extends Controller
             $ticket->priority    = $request->priority;
             $ticket->save();
 
+            logUserActivity("Membuat tiket baru: #{$ticket->code} - {$ticket->title}", Auth::user()->id);
+
             DB::commit();
             return response()->json([
                 'status'  => true,
@@ -228,6 +230,8 @@ class TicketController extends Controller
             $ticket->description = $request->description;
             $ticket->priority    = $request->priority;
             $ticket->save();
+
+            logUserActivity("Memperbarui tiket: #{$ticket->code} - {$ticket->title}", Auth::user()->id);
 
             DB::commit();
             return response()->json([
@@ -275,7 +279,10 @@ class TicketController extends Controller
             $reply->message     = $request->message;
             $reply->save();
 
+            logUserActivity("Mengirim balasan pada tiket: #{$ticket->code}", Auth::user()->id);
+
             if (isThisAdmin()) {
+                $oldStatus = $ticket->status;
                 $ticket->status = $request->status;
 
                 if ($request->status == 2) { // Resolved
@@ -283,6 +290,13 @@ class TicketController extends Controller
                 }
 
                 $ticket->save();
+
+                if ($oldStatus != $request->status) {
+                    $statusNames = [0 => 'Open', 1 => 'In Progress', 2 => 'Resolved', 3 => 'Rejected'];
+                    $oldName = $statusNames[$oldStatus] ?? 'Unknown';
+                    $newName = $statusNames[$request->status] ?? 'Unknown';
+                    logUserActivity("Mengubah status tiket #{$ticket->code} dari '{$oldName}' menjadi '{$newName}'", Auth::user()->id);
+                }
             }
 
             DB::commit();

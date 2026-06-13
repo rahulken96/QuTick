@@ -49,6 +49,8 @@ class AuthController extends Controller
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            logUserActivity("Mendaftar akun baru: {$user->email}", $user->id);
+
             DB::commit();
             return response()->json([
                 'status'  => true,
@@ -79,6 +81,8 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            logUserActivity("Login ke sistem", $user->id);
+
             return response()->json([
                 'status'  => true,
                 'message' => 'Login Accepted',
@@ -99,6 +103,7 @@ class AuthController extends Controller
     {
         try {
             $user = Auth::user();
+            logUserActivity("Logout dari sistem", $user->id);
             $user->currentAccessToken()->delete();
 
             return response()->json([

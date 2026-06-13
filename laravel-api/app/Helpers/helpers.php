@@ -31,3 +31,16 @@ if (! function_exists('isThisAdmin')) {
         return Auth::check() && Auth::user()->role == 'admin';
     }
 }
+
+if (! function_exists('logUserActivity')) {
+    function logUserActivity($activity, $userId = null)
+    {
+        \App\Models\UserLog::create([
+            'user_id' => $userId ?? (Auth::check() ? Auth::id() : null),
+            'activity' => $activity,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+    }
+}
+

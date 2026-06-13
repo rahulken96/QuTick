@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Ticket;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Mpdf\Mpdf;
 
 class DashboardController extends Controller
 {
@@ -45,4 +48,92 @@ class DashboardController extends Controller
             ]
         ]);
     }
+
+    public function getLogs(Request $request)
+    {
+        try {
+            $limit = $request->get('limit', 15);
+            $query = UserLog::with(['user']);
+
+            if (!isThisAdmin()) {
+                $query->where('user_id', Auth::id());
+            }
+
+            if ($request->filled('keyword')) {
+                $keyword = $request->keyword;
+                $query->where(function($q) use ($keyword) {
+                    $q->where('activity', 'like', '%' . $keyword . '%')
+                      ->orWhereHas('user', function($uq) use ($keyword) {
+                          $uq->where('name', 'like', '%' . $keyword . '%');
+                      });
+                });
+            }
+
+            $logs = $query->orderBy('created_at', 'desc')->paginate($limit);
+
+            return response()->json([
+                'status' => true,
+                'data' => $logs
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function exportReportPDF(Request $request)
+    {
+        if (!isThisAdmin()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized.'
+            ], 403);
+        }
+
+        try {
+            $startDate = $request->get('start_date');
+            $endDate = $request->get('end_date');
+
+            $ticketsQuery = Ticket::with(['user']);
+            if ($startDate) {
+                $ticketsQuery->whereDate('created_at', '>=', $startDate);
+            }
+            if ($endDate) {
+                $ticketsQuery->whereDate('created_at', '<=', $endDate);
+            }
+            $tickets = $ticketsQuery->orderBy('created_at', 'desc')->get();
+
+            $total = $tickets->count();
+            $open = $tickets->where('status', 0)->count();
+            $inProgress = $tickets->where('status', 1)->count();
+            $resolved = $tickets->where('status', 2)->count();
+            $rejected = $tickets->where('status', 3)->count();
+
+            $html = view('report.tickets', compact('tickets', 'startDate', 'endDate', 'total', 'open', 'inProgress', 'resolved', 'rejected'))->render();
+
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'margin_left' => 15,
+                'margin_right' => 15,
+                'margin_top' => 15,
+                'margin_bottom' => 15,
+            ]);
+
+            $mpdf->WriteHTML($html);
+
+            return response($mpdf->Output('qutick_report.pdf', 'S'), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="qutick_report.pdf"',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
+

@@ -14,6 +14,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/dashboard', [DashboardController::class, 'dashboardStatistic']);
+    Route::get('/logs', [DashboardController::class, 'getLogs']);
+    Route::get('/report/export', [DashboardController::class, 'exportReportPDF']);
 
     Route::prefix('ticket')->group(function() {
         Route::get('/all', [TicketController::class, 'allTickets']);
